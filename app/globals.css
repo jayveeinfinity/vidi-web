@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-surface: #0c0f0f;
+  --color-primary-fixed: #f8e6b1;
+  --color-tertiary-container: #4a4a4a;
+  --color-inverse-primary: #a6892c;
+  --color-background: #0c0f0f;
+  --color-primary-fixed-dim: #d4af37;
+  --color-on-secondary-container: #bab8b7;
+  --color-on-error: #690005;
+  --color-surface-tint: #d4af37;
+  --color-inverse-surface: #e2e2e2;
+  --color-surface-container-high: #1a1c1c;
+  --color-on-surface-variant: #d5c5b5;
+  --color-on-error-container: #ffdad6;
+  --color-secondary: #c8c6c5;
+  --color-on-surface: #e2e2e2;
+  --color-on-background: #e2e2e2;
+  --color-on-secondary-fixed: #1c1b1b;
+  --color-on-primary: #3a2d00;
+  --color-surface-container-lowest: #050606;
+  --color-tertiary-fixed: #e4e2e1;
+  --color-on-tertiary-container: #fbf8f8;
+  --color-error-container: #93000a;
+  --color-on-tertiary: #303030;
+  --color-error: #ffb4ab;
+  --color-surface-dim: #0c0f0f;
+  --color-tertiary: #c8c6c6;
+  --color-on-tertiary-fixed: #1b1c1c;
+  --color-surface-container-low: #121414;
+  --color-primary: #D4AF37;
+  --color-tertiary-fixed-dim: #c8c6c6;
+  --color-surface-container: #151717;
+  --color-on-tertiary-fixed-variant: #474747;
+  --color-on-primary-fixed-variant: #6b5800;
+  --color-secondary-fixed: #e5e2e1;
+  --color-secondary-container: #4a4949;
+  --color-on-secondary-fixed-variant: #474646;
+  --color-surface-bright: #232525;
+  --color-on-primary-fixed: #241e00;
+  --color-outline: #8a7e6b;
+  --color-surface-variant: #282a2a;
+  --color-inverse-on-surface: #2f3131;
+  --color-surface-container-highest: #2d3030;
+  --color-on-secondary: #313030;
+  --color-on-primary-container: #fff9e6;
+  --color-secondary-fixed-dim: #c8c6c5;
+  --color-outline-variant: #4e473a;
+  --color-primary-container: #D4AF37;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  --spacing-lg: 48px;
+  --spacing-xs: 4px;
+  --spacing-xl: 80px;
+  --spacing-md: 24px;
+  --spacing-sm: 12px;
+  --spacing-base: 8px;
+  --spacing-container-max: 1440px;
+  --spacing-gutter: 24px;
+
+  --font-display-lg: var(--font-hanken), sans-serif;
+  --font-metadata: var(--font-inter), sans-serif;
+  --font-headline-lg: var(--font-hanken), sans-serif;
+  --font-title-md: var(--font-hanken), sans-serif;
+  --font-label-sm: var(--font-geist-sans), sans-serif;
+  --font-body-lg: var(--font-inter), sans-serif;
+  --font-headline-lg-mobile: var(--font-hanken), sans-serif;
+  --font-body-md: var(--font-inter), sans-serif;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 800;
+
+  --text-metadata: 14px;
+  --text-metadata--line-height: 1.4;
+  --text-metadata--font-weight: 500;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 1.2;
+  --text-headline-lg--font-weight: 700;
+
+  --text-title-md: 20px;
+  --text-title-md--line-height: 1.4;
+  --text-title-md--font-weight: 600;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1;
+  --text-label-sm--letter-spacing: 0.05em;
+  --text-label-sm--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 1.2;
+  --text-headline-lg-mobile--font-weight: 700;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.6;
+  --text-body-md--font-weight: 400;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-on-surface);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
