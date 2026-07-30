@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { getTrending, getMovieImages, getMovieDetails, getMoviesByCategory, getMoviesByOriginCountry } from '@/lib/tmdb';
 import MovieCarousel from '@/components/MovieCarousel';
+import { createClient } from '@/utils/supabase/server';
+import AddToWatchlistButton from '@/components/AddToWatchlistButton';
+
+import { WatchlistProvider } from '@/providers/WatchlistProvider';
 
 export default async function HomePage() {
   const [
@@ -17,6 +21,17 @@ export default async function HomePage() {
     getMoviesByOriginCountry('PH'),
   ]);
   
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  let watchlistIds: number[] | undefined = undefined;
+  if (user) {
+    const { data } = await supabase.from('watchlists').select('movie_id').eq('user_id', user.id);
+    if (data) {
+      watchlistIds = data.map((item) => item.movie_id);
+    }
+  }
+
   if (!movies || movies.length === 0) {
     return <main className="min-h-screen pt-24 px-8">No movies found.</main>;
   }
@@ -37,9 +52,10 @@ export default async function HomePage() {
   const genres = heroDetails?.genres?.map((g: any) => g.name).slice(0, 3).join(', ') || '';
 
   return (
-    <main>
-      {/* Hero Section */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center overflow-hidden">
+    <WatchlistProvider initialWatchlistIds={watchlistIds}>
+      <main>
+        {/* Hero Section */}
+        <section className="relative h-screen min-h-[700px] w-full flex items-center overflow-hidden">
         {/* Full-width Backdrop Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -122,12 +138,25 @@ export default async function HomePage() {
                 </span>
                 Watch Now
               </Link>
-              <button className="px-6 h-14 border border-white/30 text-white rounded-xl flex items-center justify-center gap-2 hover:bg-white/10 backdrop-blur-md transition-all active:scale-95 group">
-                <span className="material-symbols-outlined group-hover:text-primary transition-transform">
-                  bookmark
-                </span>
-                <span className="font-semibold">Add to Watchlist</span>
-              </button>
+              {watchlistIds !== undefined ? (
+                <AddToWatchlistButton 
+                  movie={{
+                    id: heroMovie.id,
+                    title: heroMovie.title,
+                    poster_path: heroMovie.poster_path,
+                    release_date: heroMovie.release_date,
+                    genre: genres,
+                    vote_average: heroMovie.vote_average
+                  }}
+                />
+              ) : (
+                <button className="px-6 h-14 border border-white/30 text-white rounded-xl flex items-center justify-center gap-2 hover:bg-white/10 backdrop-blur-md transition-all active:scale-95 group opacity-50 cursor-not-allowed" title="Log in to use Watchlist">
+                  <span className="material-symbols-outlined group-hover:text-primary transition-transform">
+                    bookmark
+                  </span>
+                  <span className="font-semibold">Add to Watchlist</span>
+                </button>
+              )}
               <button className="w-14 h-14 border border-white/30 text-white rounded-xl flex items-center justify-center hover:bg-white/10 backdrop-blur-md transition-all active:scale-95 group">
                 <span className="material-symbols-outlined group-hover:text-primary">
                   share
@@ -143,6 +172,7 @@ export default async function HomePage() {
         movies={carouselMovies} 
         title="Trending Movies" 
         subtitle="Popular right now"
+        watchlistIds={watchlistIds}
       />
 
       {popularMovies?.length > 0 && (
@@ -150,6 +180,7 @@ export default async function HomePage() {
           movies={popularMovies} 
           title="Popular Movies" 
           subtitle="What everyone is watching"
+          watchlistIds={watchlistIds}
         />
       )}
 
@@ -158,6 +189,7 @@ export default async function HomePage() {
           movies={topRatedMovies} 
           title="Top Rated" 
           subtitle="Critically acclaimed masterpieces"
+          watchlistIds={watchlistIds}
         />
       )}
 
@@ -166,6 +198,7 @@ export default async function HomePage() {
           movies={upcomingMovies} 
           title="Upcoming Movies" 
           subtitle="Catch them in theaters soon"
+          watchlistIds={watchlistIds}
         />
       )}
 
@@ -174,8 +207,10 @@ export default async function HomePage() {
           movies={phMovies} 
           title="Philippine Cinema" 
           subtitle="Top hits and classics from the Philippines"
+          watchlistIds={watchlistIds}
         />
       )}
     </main>
+    </WatchlistProvider>
   );
 }

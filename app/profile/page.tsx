@@ -1,6 +1,9 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import LogoutButton from './LogoutButton';
+import MovieItem from '@/components/MovieItem';
+import { WatchlistProvider } from '@/providers/WatchlistProvider';
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -10,44 +13,49 @@ export default async function ProfilePage() {
     redirect('/login');
   }
 
+  const { data: watchlists } = await supabase
+    .from('watchlists')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  const watchlistIds = watchlists?.map(w => w.movie_id) || [];
+
   // user formatting
   const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
   const avatarUrl = user.user_metadata?.avatar_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCfLS8nsdRNX8xue1uEd152hk2PqRNQtc0eFJ-XJq6iBVVdrHVw0cTaJUhfL6ETaMwF9lBmi1FC978XW3APlHBJCg08EsHdIZ6CYbRwQ1gfSxFmR0Jlcg2vynJrspXa19OrnKVOAfVH-SZg1bqIIAsOssmdKa8TmkTzaksQ3dRjdSbJ0FQ1wLUPTo--scB3X9Zscak_4RSDxBQzHPxRvENbVYUrjVFtVpQ4CXAiSehrIdYQ8L6fww4W9TNOjl1L-Dwx67E-wu4KwLEC';
   const joinDate = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <main className="flex-grow pt-24 max-w-container-max mx-auto w-full flex flex-col md:flex-row min-h-[calc(100vh-160px)]">
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-[250px] p-md md:p-lg border-r border-outline-variant/10 bg-surface-container-low/30">
-        <nav className="flex flex-col gap-xs sticky top-24">
-          <a className="flex items-center gap-sm px-md py-sm rounded-lg bg-primary-container/20 text-primary-container font-bold transition-all" href="#">
+    <WatchlistProvider initialWatchlistIds={watchlistIds}>
+      <main className="flex-grow pt-24 max-w-container-max mx-auto w-full min-h-[calc(100vh-160px)] px-md md:px-lg">
+        
+        {/* Horizontal Navigation */}
+        <nav className="flex items-center gap-2 overflow-x-auto hide-scrollbar border-b border-outline-variant/10 pb-4 mb-8">
+          <a className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-container/20 text-primary-container font-bold whitespace-nowrap transition-all" href="#">
             <span className="material-symbols-outlined text-[20px]">person</span>
             <span className="font-label-md">Account Settings</span>
           </a>
-          <a className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+          <a className="flex items-center gap-2 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface whitespace-nowrap transition-all" href="#">
             <span className="material-symbols-outlined text-[20px]">security</span>
             <span className="font-label-md">Security</span>
           </a>
-          <a className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+          <a className="flex items-center gap-2 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface whitespace-nowrap transition-all" href="/profile/watchlist">
             <span className="material-symbols-outlined text-[20px]">bookmark</span>
             <span className="font-label-md">My Watchlist</span>
           </a>
-          <a className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+          <a className="flex items-center gap-2 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface whitespace-nowrap transition-all" href="#">
             <span className="material-symbols-outlined text-[20px]">history</span>
             <span className="font-label-md">Watch History</span>
           </a>
-          <a className="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+          <a className="flex items-center gap-2 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface whitespace-nowrap transition-all" href="#">
             <span className="material-symbols-outlined text-[20px]">help</span>
             <span className="font-label-md">Support</span>
           </a>
-          <div className="mt-8 border-t border-white/10 pt-4">
-             <LogoutButton />
-          </div>
         </nav>
-      </aside>
-      
-      {/* Main Content Canvas */}
-      <section className="flex-grow p-md md:p-lg space-y-xl">
+        
+        {/* Main Content Canvas */}
+        <section className="space-y-xl">
         {/* Header & Profile Info */}
         <div className="space-y-lg animate-in fade-in duration-700">
           <h2 className="font-headline-md text-on-surface">Account Settings</h2>
@@ -94,42 +102,25 @@ export default async function ProfilePage() {
         <div className="space-y-md">
           <div className="flex justify-between items-end">
             <h3 className="font-headline-sm text-on-surface">Active Watchlist</h3>
-            <a className="text-primary-container font-label-sm hover:underline uppercase tracking-widest" href="#">View All</a>
+            <Link className="text-primary-container font-label-sm hover:underline uppercase tracking-widest" href="/profile/watchlist">View All</Link>
           </div>
           <div className="flex gap-md overflow-x-auto custom-scrollbar pb-md -mx-4 px-4">
-            <div className="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
-              <img className="w-full h-full object-cover" alt="Stellar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVhhVuLHuJWlVK2xvhc5AS0TXn1eJWxBwy6S90-_eWLCqdwYVYBNLU54MpMLP78uSonwHPLLO5SGKuNVxuidWdWukF72QGcqKyVsZeiOOJrpox_LHXplUbQLGnciT75ZOAvtdV3vUFYWMt-UxvSNIZu_m46N7PSn19RA6wrFkfLqMRjswVMhW3Prn8dnUHd4-jHjkOeRWjO390GkMwT1o8r84Cl5xq2rIvsjkDq3haWBqReMkIDFYzOcQSGQxaGX00Wzu43snR6NQB"/>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-              <div className="absolute top-2 left-2 bg-primary-container text-on-primary-container px-sm py-xs rounded font-label-sm">TRENDING</div>
-              <div className="absolute bottom-0 left-0 right-0 p-md space-y-xs translate-y-2 group-hover:translate-y-0 transition-transform">
-                <h4 className="font-label-md text-white">Stellar</h4>
-                <div className="flex items-center gap-xs text-[12px] text-on-surface-variant">
-                  <span>2024</span> • <span>Sci-Fi</span> • <span className="text-primary-container">9.4</span>
-                </div>
+            {watchlists && watchlists.length > 0 ? (
+              watchlists.slice(0, 5).map((movie) => (
+                <MovieItem 
+                  key={movie.id} 
+                  movie={movie as any} 
+                  watchlistIds={watchlists.map(w => w.movie_id)} 
+                  className="w-40 md:w-48 flex-shrink-0"
+                />
+              ))
+            ) : (
+              <div className="w-full py-12 flex flex-col items-center justify-center text-center space-y-4 border border-dashed border-outline-variant/30 rounded-xl bg-surface-container-low/50">
+                <span className="material-symbols-outlined text-4xl text-on-surface-variant/50">movie</span>
+                <p className="text-on-surface-variant">Your watchlist is empty.</p>
+                <Link href="/" className="text-primary-container hover:underline text-sm font-semibold">Browse Movies</Link>
               </div>
-            </div>
-            {/* Movie Card 2 */}
-            <div className="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
-              <img className="w-full h-full object-cover" alt="Code Red" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdc9yYd68-eFwde8oyjvK7f-AgIMA9KGATwk4nyUAxTuy9eirSIGGUYSXRQ2dRVJIJhna73Q0piaKRHBsJDvK9oMd0iKpg69Eh1fW5L9zBWSA3ZoxokrcvF1wLaBJxvbCUTJvozcthC82Pd8fJfwHlroPZt9vunhBYPB3wOg_L8KCLVRWvaJbnN12wTNnQPbbeuwdPGD03kH_eaJ0a_773nSPOv38Ou3rw2USxBuOBqFot81KOx5XGIQFqlFGf4mNSswRWuXc-1kCS"/>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-md space-y-xs">
-                <h4 className="font-label-md text-white">Code Red</h4>
-                <div className="flex items-center gap-xs text-[12px] text-on-surface-variant">
-                  <span>2023</span> • <span>Action</span> • <span className="text-primary-container">8.8</span>
-                </div>
-              </div>
-            </div>
-            {/* Movie Card 3 */}
-            <div className="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
-              <img className="w-full h-full object-cover" alt="The Silent Sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFQ-XKuBCK2ll-WkUHa-klby4zg_UpIRj1uh0S7_DkbsZoQvPPSiS3Ai-7VE9mxx8ORGF5Y7yMRHd3KeJ33CX9Thrm14V7UppVSELdLvfeYkJnOKg5zZHTiabS5KH7TXFy6ltcnqV50DWnoRAJtgxKqXxl4hjsOcdaIkFIey83xT1tnThZlJv5DRkF8cdUzsudw6mM6LxCVieLg2rZW_PeQJS-fj0yka9vHWtBWT_BccbuLsnyBF0UcLbxHbpCKLDeyYb1csbAeSxW"/>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-md space-y-xs">
-                <h4 className="font-label-md text-white">The Silent Sea</h4>
-                <div className="flex items-center gap-xs text-[12px] text-on-surface-variant">
-                  <span>2024</span> • <span>Thriller</span> • <span className="text-primary-container">9.1</span>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -192,5 +183,6 @@ export default async function ProfilePage() {
 
       </section>
     </main>
+    </WatchlistProvider>
   );
 }

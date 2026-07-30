@@ -178,3 +178,66 @@ export async function getMoviesByOriginCountry(countryCode: string) {
 
     return results;
 }
+
+export async function getMovieListByCategory(category: string, limit: number = 30) {
+    let endpoint = '';
+    
+    switch (category) {
+        case 'new-releases':
+            endpoint = '/movie/now_playing';
+            break;
+        case 'trending':
+            endpoint = '/trending/movie/week';
+            break;
+        case 'popular':
+            endpoint = '/movie/popular';
+            break;
+        case 'top-rated':
+            endpoint = '/movie/top_rated';
+            break;
+        case 'upcoming':
+            endpoint = '/movie/upcoming';
+            break;
+        default:
+            endpoint = '/movie/popular'; // fallback
+    }
+
+    const cacheKey = `movies_list:${category}:${limit}`;
+
+    try {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            return typeof cached === 'string' ? JSON.parse(cached) : cached;
+        }
+    } catch (error) {
+        console.error('Redis fetch error:', error);
+    }
+
+    // Fetch up to 2 pages to get at least 30 results
+    let results: any[] = [];
+    
+    for (let page = 1; page <= Math.ceil(limit / 20); page++) {
+        const res = await fetch(`${TMDB_BASE_URL}${endpoint}?page=${page}`, {
+            headers: {
+                Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+            },
+            next: { revalidate: 86400 }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            results = [...results, ...(data.results || [])];
+        }
+    }
+
+    // Trim to exact limit
+    results = results.slice(0, limit);
+
+    try {
+        await redis.setex(cacheKey, 86400, results);
+    } catch (error) {
+        console.error('Redis save error:', error);
+    }
+
+    return results;
+}

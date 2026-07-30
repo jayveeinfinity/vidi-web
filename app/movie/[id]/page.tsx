@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { getMovieDetails, getMovieImages } from '@/lib/tmdb';
 import MovieCarousel from '@/components/MovieCarousel';
 import CastCarousel from '@/components/CastCarousel';
+import AddToWatchlistButton from '@/components/AddToWatchlistButton';
+import { createClient } from '@/utils/supabase/server';
+import { WatchlistProvider } from '@/providers/WatchlistProvider';
 
 export default async function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -9,6 +12,17 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
   
   if (!movie) {
     return <main className="min-h-screen pt-24 px-8">Movie not found.</main>;
+  }
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  let watchlistIds: number[] | undefined = undefined;
+  if (user) {
+    const { data } = await supabase.from('watchlists').select('movie_id').eq('user_id', user.id);
+    if (data) {
+      watchlistIds = data.map((item) => item.movie_id);
+    }
   }
 
   const images = await getMovieImages(id, 'movie');
@@ -44,9 +58,10 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
   };
 
   return (
-    <main>
-      {/* Immersive Hero Section */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-end overflow-hidden">
+    <WatchlistProvider initialWatchlistIds={watchlistIds}>
+      <main>
+        {/* Immersive Hero Section */}
+        <section className="relative h-screen min-h-[700px] w-full flex items-end overflow-hidden">
         {/* Full-width Backdrop Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -123,10 +138,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
                 Watch Now
               </Link>
-              <button className="px-6 h-14 border border-white/30 text-white rounded-xl flex items-center justify-center gap-2 hover:bg-white/10 backdrop-blur-md transition-all active:scale-95 group">
-                <span className="material-symbols-outlined group-hover:text-primary transition-colors group-hover:scale-110 transition-transform">bookmark</span>
-                <span className="font-semibold">Add to Watchlist</span>
-              </button>
+              <AddToWatchlistButton movie={movie} />
               <button className="w-14 h-14 border border-white/30 text-white rounded-xl flex items-center justify-center hover:bg-white/10 backdrop-blur-md transition-all active:scale-95 hover:text-primary">
                 <span className="material-symbols-outlined">share</span>
               </button>
@@ -266,9 +278,11 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
             movies={recommendations} 
             title="Recommended Movies" 
             subtitle={`Because you watched ${movie.title}`}
+            watchlistIds={watchlistIds}
           />
         </div>
       )}
     </main>
+    </WatchlistProvider>
   );
 }

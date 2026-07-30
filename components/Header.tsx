@@ -55,30 +55,60 @@ export default function Header() {
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNn1BlqAEdRyFBEBvIo6BXeSRinlbFuzlGC6c7p9ppOlQoh6WdJjktD8IjPmEHoti-gfHHNOYDJJQdWB3LkT7KeoBnFLXX0HfnmQuYOTKJ0B6J7K8ldZX23SZHmlziV7jZaoVO766Q4sH0S0iizcpRUbgbgX6L5W_6oPrZ14Uo8Rkd42jjQdqOVfjFnFs5OKow1H_fp4_njNwRTJvYJQPkkkaftVJ4Cp3ii74xwaMGqLyI9sxfSdfEvpZu1X1ylEWyC6N8YWmqEun_"
             />
           </Link>
-          <div className="hidden md:flex gap-6">
-            {[
-              { href: '/', label: 'Home' },
-              { href: '/movies', label: 'Movies' },
-              { href: '/tv', label: 'TV Shows' },
-              { href: '/genres', label: 'Genres' },
-              { href: '/trending', label: 'Trending' },
-              { href: '/popular', label: 'Popular' },
-            ].map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={
-                    isActive
-                      ? "text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md"
-                      : "text-on-surface hover:text-primary transition-colors font-body-md text-body-md pb-1 border-b-2 border-transparent"
-                  }
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex gap-6 items-center">
+            <Link
+              href="/"
+              className={
+                pathname === '/'
+                  ? "text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md"
+                  : "text-on-surface hover:text-primary transition-colors font-body-md text-body-md pb-1 border-b-2 border-transparent"
+              }
+            >
+              Home
+            </Link>
+            
+            <div className="relative group py-2">
+              <Link
+                href="/movies"
+                className={
+                  pathname.startsWith('/movies')
+                    ? "text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md flex items-center gap-1"
+                    : "text-on-surface hover:text-primary transition-colors font-body-md text-body-md pb-1 border-b-2 border-transparent flex items-center gap-1"
+                }
+              >
+                Movies
+                <span className="material-symbols-outlined text-[16px] transition-transform group-hover:rotate-180">expand_more</span>
+              </Link>
+              <div className="absolute left-0 top-full w-48 rounded-xl bg-surface-container-highest border border-white/10 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-2 z-50 transform translate-y-2 group-hover:translate-y-0">
+                <Link href="/movies/new-releases" className="px-4 py-2.5 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium">New Releases</Link>
+                <Link href="/movies/trending" className="px-4 py-2.5 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium">Trending</Link>
+                <Link href="/movies/popular" className="px-4 py-2.5 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium">Popular</Link>
+                <Link href="/movies/top-rated" className="px-4 py-2.5 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium">Top Rated</Link>
+                <Link href="/movies/upcoming" className="px-4 py-2.5 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium">Upcoming</Link>
+              </div>
+            </div>
+
+            <Link
+              href="/tv"
+              className={
+                pathname.startsWith('/tv')
+                  ? "text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md"
+                  : "text-on-surface hover:text-primary transition-colors font-body-md text-body-md pb-1 border-b-2 border-transparent"
+              }
+            >
+              TV Shows
+            </Link>
+
+            <Link
+              href="/genres"
+              className={
+                pathname.startsWith('/genres')
+                  ? "text-primary font-semibold border-b-2 border-primary pb-1 font-body-md text-body-md"
+                  : "text-on-surface hover:text-primary transition-colors font-body-md text-body-md pb-1 border-b-2 border-transparent"
+              }
+            >
+              Genres
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-6">
