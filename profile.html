@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vidi | Account Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800&amp;family=Inter:wght@400;500&amp;family=Geist:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#121414",
+                        "primary-fixed": "#fdf3d3",
+                        "tertiary-container": "#737272",
+                        "inverse-primary": "#D4AF37",
+                        "background": "#0c0f0f",
+                        "primary-fixed-dim": "#D4AF37",
+                        "on-secondary-container": "#bab8b7",
+                        "on-error": "#690005",
+                        "surface-tint": "#D4AF37",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-container-high": "#1a1c1c",
+                        "on-surface-variant": "#c9c5c4",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#c8c6c5",
+                        "on-surface": "#e2e2e2",
+                        "on-background": "#e2e2e2",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-primary": "#3a2d00",
+                        "surface-container-lowest": "#050606",
+                        "tertiary-fixed": "#e4e2e1",
+                        "on-tertiary-container": "#fbf8f8",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#303030",
+                        "error": "#ffb4ab",
+                        "surface-dim": "#0c0f0f",
+                        "tertiary": "#c8c6c6",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "surface-container-low": "#0e1111",
+                        "primary": "#D4AF37",
+                        "tertiary-fixed-dim": "#c8c6c6",
+                        "surface-container": "#141717",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "on-primary-fixed-variant": "#5a4600",
+                        "secondary-fixed": "#e5e2e1",
+                        "secondary-container": "#4a4949",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface-bright": "#1e2121",
+                        "on-primary-fixed": "#251d00",
+                        "outline": "#8a7e70",
+                        "surface-variant": "#1f2222",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-container-highest": "#282b2b",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#fffcf0",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "outline-variant": "#4a443a",
+                        "primary-container": "#D4AF37"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "md": "24px",
+                        "xl": "80px",
+                        "lg": "48px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "sm": "16px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Geist"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Geist"],
+                        "headline-sm": ["Be Vietnam Pro"],
+                        "display-lg-mobile": ["Be Vietnam Pro"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "600"}],
+                        "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(20, 23, 23, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 2px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container/30 min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center px-lg py-sm max-w-container-max mx-auto h-20">
+<div class="flex items-center gap-lg">
+<a class="h-10" href="#">
+<img alt="Vidi" class="h-full w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNn1BlqAEdRyFBEBvIo6BXeSRinlbFuzlGC6c7p9ppOlQoh6WdJjktD8IjPmEHoti-gfHHNOYDJJQdWB3LkT7KeoBnFLXX0HfnmQuYOTKJ0B6J7K8ldZX23SZHmlziV7jZaoVO766Q4sH0S0iizcpRUbgbgX6L5W_6oPrZ14Uo8Rkd42jjQdqOVfjFnFs5OKow1H_fp4_njNwRTJvYJQPkkkaftVJ4Cp3ii74xwaMGqLyI9sxfSdfEvpZu1X1ylEWyC6N8YWmqEun_"/>
+</a>
+<nav class="hidden md:flex items-center gap-md font-body-md text-body-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Movies</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">TV Shows</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Genres</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Trending</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Popular</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-base text-on-surface-variant hover:bg-surface-container-highest/50 rounded-lg transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-base text-on-surface-variant hover:bg-surface-container-highest/50 rounded-lg transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container/50 overflow-hidden cursor-pointer hover:border-primary-container transition-colors">
+<img class="w-full h-full object-cover" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0jPjIBArGEbZGaTb_2dJMYQXWWpSoByVcs8HbCLFHH3YRtyq-Fhu5LQp0fGK8PCseIh5Vd1hDxJM9tgTrc_UWVbGFj8S3ZrlL1f7FEfOSfM72X4f-WwhGA7_h17OaWHMvUGil7dSpwqbaWPTgG3jAQqYCAsJDtRQiW1qagEqdZEaL_E28uTUONae26q7K3vlNAtjbTsMArFkj1Pf71K9esc8KBphYLiTvW4d_xsX-8uuz7Jn0Q-b7gYLRlhrmIDBrWawm0gOr7P7i"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-20 max-w-container-max mx-auto w-full flex flex-col md:flex-row">
+<!-- Sidebar Navigation -->
+<aside class="w-full md:w-[250px] p-md md:p-lg border-r border-outline-variant/10 bg-surface-container-low/30">
+<nav class="flex flex-col gap-xs sticky top-24">
+<a class="flex items-center gap-sm px-md py-sm rounded-lg bg-primary-container/20 text-primary-container font-bold transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="person">person</span>
+<span class="font-label-md">Account Settings</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="security">security</span>
+<span class="font-label-md">Security</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="bookmark">bookmark</span>
+<span class="font-label-md">My Watchlist</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
+<span class="font-label-md">Watch History</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-label-md">Support</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<section class="flex-grow p-md md:p-lg space-y-xl">
+<!-- Header & Profile Info -->
+<div class="space-y-lg animate-in fade-in slide-in-from-bottom-4 duration-700" style="opacity: 1; transform: translateY(0px); transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1);">
+<h2 class="font-headline-md text-on-surface">Account Settings</h2>
+<div class="glass-panel p-lg rounded-xl flex flex-col md:flex-row items-center md:items-start gap-lg relative overflow-hidden group">
+<div class="relative">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-primary-container/20 p-1">
+<img class="w-full h-full object-cover rounded-full" data-alt="User profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfLS8nsdRNX8xue1uEd152hk2PqRNQtc0eFJ-XJq6iBVVdrHVw0cTaJUhfL6ETaMwF9lBmi1FC978XW3APlHBJCg08EsHdIZ6CYbRwQ1gfSxFmR0Jlcg2vynJrspXa19OrnKVOAfVH-SZg1bqIIAsOssmdKa8TmkTzaksQ3dRjdSbJ0FQ1wLUPTo--scB3X9Zscak_4RSDxBQzHPxRvENbVYUrjVFtVpQ4CXAiSehrIdYQ8L6fww4W9TNOjl1L-Dwx67E-wu4KwLEC"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary-container text-on-primary-container w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="flex-grow space-y-md text-center md:text-left">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="text-on-surface-variant font-label-sm uppercase tracking-wider">Username</label>
+<p class="font-headline-sm text-on-surface">Alex Rivers</p>
+</div>
+<div class="space-y-xs">
+<label class="text-on-surface-variant font-label-sm uppercase tracking-wider">Email Address</label>
+<p class="font-headline-sm text-on-surface">alex.rivers@example.com</p>
+</div>
+<div class="space-y-xs">
+<label class="text-on-surface-variant font-label-sm uppercase tracking-wider">Member Since</label>
+<p class="font-headline-sm text-on-surface">January 2024</p>
+</div>
+<div class="space-y-xs">
+<label class="text-on-surface-variant font-label-sm uppercase tracking-wider">Plan Status</label>
+<p class="font-headline-sm text-primary-container flex items-center justify-center md:justify-start gap-xs">
+                                    Premium Ultra HD
+                                    <span class="material-symbols-outlined text-[16px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</p>
+</div>
+</div>
+<div class="pt-base">
+<button class="px-md py-sm bg-transparent border border-primary-container text-primary-container font-label-md rounded-lg hover:bg-primary-container/10 transition-colors">Edit Profile Information</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Watchlist Section -->
+<div class="space-y-md">
+<div class="flex justify-between items-end">
+<h3 class="font-headline-sm text-on-surface">Active Watchlist</h3>
+<a class="text-primary-container font-label-sm hover:underline uppercase tracking-widest" href="#">View All</a>
+</div>
+<div class="flex gap-md overflow-x-auto custom-scrollbar pb-md -mx-4 px-4">
+<!-- Movie Card 1 -->
+<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
+<img class="w-full h-full object-cover" data-alt="Stellar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVhhVuLHuJWlVK2xvhc5AS0TXn1eJWxBwy6S90-_eWLCqdwYVYBNLU54MpMLP78uSonwHPLLO5SGKuNVxuidWdWukF72QGcqKyVsZeiOOJrpox_LHXplUbQLGnciT75ZOAvtdV3vUFYWMt-UxvSNIZu_m46N7PSn19RA6wrFkfLqMRjswVMhW3Prn8dnUHd4-jHjkOeRWjO390GkMwT1o8r84Cl5xq2rIvsjkDq3haWBqReMkIDFYzOcQSGQxaGX00Wzu43snR6NQB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
+<div class="absolute top-2 left-2 bg-primary-container text-on-primary-container px-sm py-xs rounded font-label-sm">TRENDING</div>
+<div class="absolute bottom-0 left-0 right-0 p-md space-y-xs translate-y-2 group-hover:translate-y-0 transition-transform">
+<h4 class="font-label-md text-white">Stellar</h4>
+<div class="flex items-center gap-xs text-[12px] text-on-surface-variant">
+<span class="">2024</span> • <span class="">Sci-Fi</span> • <span class="text-primary-container">9.4</span>
+</div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="bg-primary-container/90 text-on-primary-container px-md py-sm rounded-full flex items-center gap-sm shadow-2xl backdrop-blur-md animate-bounce">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span class="font-label-md">Play Now</span>
+</div>
+</div>
+</div>
+<!-- Movie Card 2 -->
+<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
+<img class="w-full h-full object-cover" data-alt="Code Red" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdc9yYd68-eFwde8oyjvK7f-AgIMA9KGATwk4nyUAxTuy9eirSIGGUYSXRQ2dRVJIJhna73Q0piaKRHBsJDvK9oMd0iKpg69Eh1fW5L9zBWSA3ZoxokrcvF1wLaBJxvbCUTJvozcthC82Pd8fJfwHlroPZt9vunhBYPB3wOg_L8KCLVRWvaJbnN12wTNnQPbbeuwdPGD03kH_eaJ0a_773nSPOv38Ou3rw2USxBuOBqFot81KOx5XGIQFqlFGf4mNSswRWuXc-1kCS"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 right-0 p-md space-y-xs">
+<h4 class="font-label-md text-white">Code Red</h4>
+<div class="flex items-center gap-xs text-[12px] text-on-surface-variant">
+<span class="">2023</span> • <span class="">Action</span> • <span class="text-primary-container">8.8</span>
+</div>
+</div>
+</div>
+<!-- Movie Card 3 -->
+<div class="min-w-[200px] md:min-w-[240px] relative group cursor-pointer aspect-[2/3] overflow-hidden rounded-xl border border-outline-variant/20 shadow-xl transition-all duration-500 hover:scale-[1.02] hover:border-primary-container/50">
+<img class="w-full h-full object-cover" data-alt="The Silent Sea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFQ-XKuBCK2ll-WkUHa-klby4zg_UpIRj1uh0S7_DkbsZoQvPPSiS3Ai-7VE9mxx8ORGF5Y7yMRHd3KeJ33CX9Thrm14V7UppVSELdLvfeYkJnOKg5zZHTiabS5KH7TXFy6ltcnqV50DWnoRAJtgxKqXxl4hjsOcdaIkFIey83xT1tnThZlJv5DRkF8cdUzsudw6mM6LxCVieLg2rZW_PeQJS-fj0yka9vHWtBWT_BccbuLsnyBF0UcLbxHbpCKLDeyYb1csbAeSxW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 right-0 p-md space-y-xs">
+<h4 class="font-label-md text-white">The Silent Sea</h4>
+<div class="flex items-center gap-xs text-[12px] text-on-surface-variant">
+<span class="">2024</span> • <span class="">Thriller</span> • <span class="text-primary-container">9.1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recently Watched History Section -->
+<div class="space-y-md">
+<div class="flex justify-between items-end">
+<h3 class="font-headline-sm text-on-surface">Recently Watched History</h3>
+<button class="text-on-surface-variant font-label-sm hover:text-primary-container transition-colors uppercase tracking-widest">Clear History</button>
+</div>
+<div class="flex gap-md overflow-x-auto custom-scrollbar pb-md -mx-4 px-4">
+<!-- History Item 1 -->
+<div class="min-w-[160px] md:min-w-[200px] group cursor-pointer space-y-sm">
+<div class="aspect-[2/3] relative rounded-lg overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Shadow Realm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS3C7JZ_w9BwAVaQe7pH7Ph8P01kUt6p5nTuD-5YZQCoC-itajDUR_JAkTd6zn1B6I-LCOUF6n73j0OkALhkIZXO6BgC8qPPmzgV7BJ8Gr-4aTnsfu_0IjfHjYGzc_605x_8J9tNXNvCKhylh6u8y3ciDpwTkfZaNpDE9SFS_XekUYgANQ3IcPB4TnnG8FRBBBKW49Yo-57byXxYQg2LE2RRVpPXW7m5G5gktSX8dgYsiy3dGWJnjk6tARH6zlx_qy0RLJ-L6GbrQh"/>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-surface-container-highest">
+<div class="h-full bg-primary-container" style="width: 60%;"></div>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+<div class="space-y-xs">
+<p class="font-label-md text-on-surface truncate">Shadow Realm</p>
+<p class="text-[12px] text-on-surface-variant">42m remaining</p>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="min-w-[160px] md:min-w-[200px] group cursor-pointer space-y-sm">
+<div class="aspect-[2/3] relative rounded-lg overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Mars Horizon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzLA0v1PiiSZx5IFimUHf96CCxlJ6Ofk0AIPft6FxugGxjf2rGAjzodSvQsL3RphDo2HbiKSVHwca9HD9hojQjThNmO4JM-DyQKu3IFufoy68r4eyyl2v9im5qh5_tBFWOKi1w0nAZhUk0MUwsnHiPKL9G_t-57rQ3eOrTyNne8EZzKgXeWA3DnhAiXLeOWPWa2mRYQm-px28l85jFu1fxPK3DX2FWYt1b2oZm21_1wMI5beKoJ5EusY3rB749YPi4XIeoWNmfUo0R"/>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-surface-container-highest">
+<div class="h-full bg-primary-container" style="width: 85%;"></div>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+<div class="space-y-xs">
+<p class="font-label-md text-on-surface truncate">Mars Horizon</p>
+<p class="text-[12px] text-on-surface-variant">12m remaining</p>
+</div>
+</div>
+<!-- History Item 3 -->
+<div class="min-w-[160px] md:min-w-[200px] group cursor-pointer space-y-sm">
+<div class="aspect-[2/3] relative rounded-lg overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Velocita" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8EjpOlf5gGEtdF5QzOU_QNVN3gffPv1aGUP1Gkd5BZ3DFlfF6VGIGxPWbZ6mkiMS_DErGlaV5Jx7lr6HiQ_rZnGpbaypoag4vDAsdMDu6VmazeTLRqGSeuyAeXCy2C6LqYtgm_PH-t-hSrjAo9QFH6MIIN_tbH2JtWd0aQLqWOmI2HN_pGdCKzoow1l5edqmWE0ib9X3xCN1DrO2EbX11ByCnWwZfntyY0eQQhWWBEOScw_3XUZLh6iHYu8UTd0fx8B5HdhaQmAHG"/>
+<div class="absolute bottom-0 left-0 right-0 h-1 bg-surface-container-highest">
+<div class="h-full bg-primary-container" style="width: 30%;"></div>
+</div>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="play_circle">play_circle</span>
+</div>
+</div>
+<div class="space-y-xs">
+<p class="font-label-md text-on-surface truncate">Velocita</p>
+<p class="text-[12px] text-on-surface-variant">1h 15m remaining</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl mt-auto bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg gap-md max-w-container-max mx-auto">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<a class="h-8" href="#">
+<img alt="Vidi" class="h-full w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNn1BlqAEdRyFBEBvIo6BXeSRinlbFuzlGC6c7p9ppOlQoh6WdJjktD8IjPmEHoti-gfHHNOYDJJQdWB3LkT7KeoBnFLXX0HfnmQuYOTKJ0B6J7K8ldZX23SZHmlziV7jZaoVO766Q4sH0S0iizcpRUbgbgX6L5W_6oPrZ14Uo8Rkd42jjQdqOVfjFnFs5OKow1H_fp4_njNwRTJvYJQPkkkaftVJ4Cp3ii74xwaMGqLyI9sxfSdfEvpZu1X1ylEWyC6N8YWmqEun_"/>
+</a>
+<p class="font-body-md text-label-sm text-tertiary opacity-80">© 2024 Vidi. Data provided by TMDB.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="font-label-sm text-on-surface-variant hover:text-primary-container transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary-container transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary-container transition-colors" href="#">Help Center</a>
+<a class="font-label-sm text-on-surface-variant hover:text-primary-container transition-colors" href="#">Contact Us</a>
+</div>
+<div class="flex gap-md">
+<button class="text-on-surface-variant hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+</div>
+</div>
+</footer>
+<script>
+        document.querySelectorAll('.custom-scrollbar').forEach(carousel => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carousel.classList.add('active');
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+            carousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                carousel.classList.remove('active');
+            });
+            carousel.addEventListener('mouseup', () => {
+                isDown = false;
+                carousel.classList.remove('active');
+            });
+            carousel.addEventListener('mousemove', (e) => {
+                if(!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 2;
+                carousel.scrollLeft = scrollLeft - walk;
+            });
+        });
+
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-in').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            el.style.transition = "all 0.8s cubic-bezier(0.2, 1, 0.3, 1)";
+            observer.observe(el);
+        });
+    </script>
+</body></html>

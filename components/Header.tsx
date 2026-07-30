@@ -4,10 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
+import { createClient } from '@/utils/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +23,19 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   if (pathname.startsWith('/watch')) return null;
@@ -67,17 +83,25 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-6">
           <SearchBar />
-          <button className="relative hover:text-primary transition-all duration-300 scale-95 active:scale-90">
-            <span className="material-symbols-outlined">notifications</span>
-            <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
-          </button>
-          <div className="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all">
-            <img
-              alt="User Profile"
-              className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPfbfb8N87pc7vZKY4uHLpkRsBdFgOmEqIDE9Uh6dK50Gs8ObAxuiHUPeaxJ9TxjezBXFQkL9kkgS-XowLQ2MnAM6gR17CIfpxlBAmyRH3hh1pPDdTgfHXcQKsDjySAUAuGhEm1-FayxWK5aDt4herj5RGphFWDdAJp38-l1ghNEm9LlSC4ApIavkALtYkfmtJ3bnelgJpQjNbljEjaRWYXnC-G-EVPiJfxs9eMCGb31wUq0NGJew-auVy6qBWrq3y9UOM9plXb1Nd"
-            />
-          </div>
+          {user ? (
+            <>
+              <button className="relative hover:text-primary transition-all duration-300 scale-95 active:scale-90 hidden md:block">
+                <span className="material-symbols-outlined">notifications</span>
+                <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+              </button>
+              <Link href="/profile" className="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all">
+                <img
+                  alt="User Profile"
+                  className="w-full h-full object-cover"
+                  src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAPfbfb8N87pc7vZKY4uHLpkRsBdFgOmEqIDE9Uh6dK50Gs8ObAxuiHUPeaxJ9TxjezBXFQkL9kkgS-XowLQ2MnAM6gR17CIfpxlBAmyRH3hh1pPDdTgfHXcQKsDjySAUAuGhEm1-FayxWK5aDt4herj5RGphFWDdAJp38-l1ghNEm9LlSC4ApIavkALtYkfmtJ3bnelgJpQjNbljEjaRWYXnC-G-EVPiJfxs9eMCGb31wUq0NGJew-auVy6qBWrq3y9UOM9plXb1Nd"}
+                />
+              </Link>
+            </>
+          ) : (
+            <Link href="/login" className="px-4 py-2 bg-primary/10 text-primary font-label-md rounded-lg hover:bg-primary/20 transition-colors">
+              Sign In
+            </Link>
+          )}
         </div>
       </nav>
     </header>
