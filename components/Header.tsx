@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
 import { createClient } from '@/utils/supabase/client';
 import type { User } from '@supabase/supabase-js';
@@ -10,7 +10,18 @@ import type { User } from '@supabase/supabase-js';
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsProfileMenuOpen(false);
+    router.push('/');
+    router.refresh();
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -119,13 +130,53 @@ export default function Header() {
                 <span className="material-symbols-outlined">notifications</span>
                 <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
               </button>
-              <Link href="/profile" className="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all">
-                <img
-                  alt="User Profile"
-                  className="w-full h-full object-cover"
-                  src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAPfbfb8N87pc7vZKY4uHLpkRsBdFgOmEqIDE9Uh6dK50Gs8ObAxuiHUPeaxJ9TxjezBXFQkL9kkgS-XowLQ2MnAM6gR17CIfpxlBAmyRH3hh1pPDdTgfHXcQKsDjySAUAuGhEm1-FayxWK5aDt4herj5RGphFWDdAJp38-l1ghNEm9LlSC4ApIavkALtYkfmtJ3bnelgJpQjNbljEjaRWYXnC-G-EVPiJfxs9eMCGb31wUq0NGJew-auVy6qBWrq3y9UOM9plXb1Nd"}
-                />
-              </Link>
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  className="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all focus:outline-none"
+                >
+                  <img
+                    alt="User Profile"
+                    className="w-full h-full object-cover"
+                    src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAPfbfb8N87pc7vZKY4uHLpkRsBdFgOmEqIDE9Uh6dK50Gs8ObAxuiHUPeaxJ9TxjezBXFQkL9kkgS-XowLQ2MnAM6gR17CIfpxlBAmyRH3hh1pPDdTgfHXcQKsDjySAUAuGhEm1-FayxWK5aDt4herj5RGphFWDdAJp38-l1ghNEm9LlSC4ApIavkALtYkfmtJ3bnelgJpQjNbljEjaRWYXnC-G-EVPiJfxs9eMCGb31wUq0NGJew-auVy6qBWrq3y9UOM9plXb1Nd"}
+                  />
+                </button>
+
+                {isProfileMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setIsProfileMenuOpen(false)}
+                    ></div>
+                    <div className="absolute right-0 mt-2 w-48 rounded-xl bg-surface-container-highest border border-white/10 shadow-2xl py-2 z-50 flex flex-col">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="px-4 py-2 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium text-left flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">person</span>
+                        Profile
+                      </Link>
+                      <Link
+                        href="/settings"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="px-4 py-2 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium text-left flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">settings</span>
+                        Settings
+                      </Link>
+                      <div className="h-px bg-white/10 my-1"></div>
+                      <button
+                        onClick={handleLogout}
+                        className="px-4 py-2 hover:bg-white/5 text-error hover:text-error/80 transition-colors text-sm font-medium text-left flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </>
           ) : (
             <Link href="/login" className="px-4 py-2 bg-primary/10 text-primary font-label-md rounded-lg hover:bg-primary/20 transition-colors">
