@@ -145,7 +145,7 @@ export default async function HomePage() {
                     title: heroMovie.title,
                     poster_path: heroMovie.poster_path,
                     release_date: heroMovie.release_date,
-                    genre: genres,
+                    genres: genres,
                     vote_average: heroMovie.vote_average
                   }}
                 />
