@@ -17,7 +17,7 @@ export default function VidsrcPlayer({
   const embedUrl =
     type === 'movie'
       ? `https://vidsrc.to/embed/movie/${tmdbId}`
-      : `https://vidsrc.to/embed/tv/${tmdbId}?season=${season}&episode=${episode}`;
+      : `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
 
   return (
     <div className="w-full h-full bg-black relative">

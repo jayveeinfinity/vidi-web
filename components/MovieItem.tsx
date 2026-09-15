@@ -11,24 +11,28 @@ export interface Movie {
   vote_average?: number;
   movie_id?: number; // for watchlist compatibility
   release_year?: string; // for watchlist compatibility
+  media_type?: 'movie' | 'tv';
+  genre?: string;
 }
 
 interface MovieItemProps {
   movie: Movie;
   watchlistIds?: number[];
   className?: string;
+  type?: 'movie' | 'tv';
 }
 
-export default function MovieItem({ movie, watchlistIds, className = '' }: MovieItemProps) {
+export default function MovieItem({ movie, watchlistIds, className = '', type }: MovieItemProps) {
   // Normalize movie properties for watchlist objects that use slightly different keys
   const movieId = movie.movie_id || movie.id;
   const displayTitle = movie.title || movie.name;
   const displayYear = movie.release_year || (movie.release_date || movie.first_air_date)?.split('-')[0] || '';
   const voteAverage = movie.vote_average;
+  const mediaType = type || movie.media_type || (movie.first_air_date || (movie.name && !movie.title) ? 'tv' : 'movie');
 
   return (
     <div className={`group cursor-pointer relative ${className}`}>
-      <Link href={`/movie/${movieId}`} className="block h-full">
+      <Link href={`/${mediaType}/${movieId}`} className="block h-full">
         <div className="relative aspect-[2/3] rounded-xl overflow-hidden mb-4 shadow-xl">
           <img
             alt={displayTitle}

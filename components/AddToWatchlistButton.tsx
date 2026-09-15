@@ -7,9 +7,11 @@ import { useWatchlist } from '@/providers/WatchlistProvider';
 interface AddToWatchlistButtonProps {
   movie: {
     id: number;
-    title: string;
+    title?: string;
+    name?: string;
     poster_path: string | null;
-    release_date: string;
+    release_date?: string;
+    first_air_date?: string;
     genres?: { name: string }[] | string;
     vote_average: number;
   };
@@ -36,18 +38,21 @@ export default function AddToWatchlistButton({ movie }: AddToWatchlistButtonProp
         alert(result.error || 'Failed to remove from watchlist');
       }
     } else {
-      let genreString = 'Movie';
+      let genreString = (movie.first_air_date || (movie.name && !movie.title)) ? 'TV Series' : 'Movie';
       if (typeof movie.genres === 'string') {
         genreString = movie.genres;
       } else if (Array.isArray(movie.genres) && movie.genres.length > 0) {
         genreString = movie.genres[0].name;
       }
 
+      const displayTitle = movie.title || movie.name || 'Unknown Title';
+      const releaseYear = (movie.release_date || movie.first_air_date)?.split('-')[0] || 'Unknown';
+
       const result = await addToWatchlist({
         movieId: movie.id,
-        title: movie.title,
+        title: displayTitle,
         posterPath: movie.poster_path,
-        releaseYear: movie.release_date ? movie.release_date.split('-')[0] : 'Unknown',
+        releaseYear: releaseYear,
         genre: genreString,
         voteAverage: movie.vote_average || 0,
       });

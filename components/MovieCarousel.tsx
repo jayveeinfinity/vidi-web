@@ -8,6 +8,7 @@ interface MovieCarouselProps {
   title?: string;
   subtitle?: string;
   watchlistIds?: number[];
+  type?: 'movie' | 'tv';
 }
 
 export default function MovieCarousel({
@@ -15,6 +16,7 @@ export default function MovieCarousel({
   title = 'Recommended Movies',
   subtitle = 'Because you watched The Last Light',
   watchlistIds,
+  type,
 }: MovieCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +74,7 @@ export default function MovieCarousel({
             key={movie.id} 
             movie={movie} 
             watchlistIds={watchlistIds} 
+            type={type}
             className="flex-shrink-0 w-64" 
           />
         ))}

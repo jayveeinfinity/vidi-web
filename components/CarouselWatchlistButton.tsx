@@ -44,7 +44,7 @@ export default function CarouselWatchlistButton({ movie, initialIsAdded }: Carou
         title: movie.title || movie.name || 'Unknown Title',
         posterPath: movie.poster_path,
         releaseYear: (movie.release_date || movie.first_air_date)?.split('-')[0] || 'Unknown',
-        genre: 'Movie', // Defaulting since we don't fetch full genres for carousel
+        genre: (movie.first_air_date || (movie.name && !movie.title)) ? 'TV Series' : 'Movie',
         voteAverage: movie.vote_average || 0,
       });
       

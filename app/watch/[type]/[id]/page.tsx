@@ -1,6 +1,6 @@
 import VidsrcPlayer from '@/components/VidsrcPlayer';
 import WatchOverlay from '@/components/WatchOverlay';
-import { getMovieDetails } from '@/lib/tmdb';
+import { getMovieDetails, getTVEpisodeDetails } from '@/lib/tmdb';
 
 interface WatchPageProps {
   params: Promise<{
@@ -19,11 +19,23 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
 
   let title = 'Unknown';
   let year = '';
+  let episodeTitle = '';
 
-  const details = await getMovieDetails(id, type);
+  const season = s || 1;
+  const episode = e || 1;
+
+  const [details, episodeDetails] = await Promise.all([
+    getMovieDetails(id, type),
+    type === 'tv' ? getTVEpisodeDetails(id, season, episode) : Promise.resolve(null),
+  ]);
+
   if (details) {
     title = type === 'movie' ? details.title : details.name;
     year = (type === 'movie' ? details.release_date : details.first_air_date)?.split('-')[0] || '';
+  }
+
+  if (episodeDetails?.name) {
+    episodeTitle = episodeDetails.name;
   }
 
   return (
@@ -32,13 +44,17 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
         title={title} 
         year={year} 
         backUrl={`/${type}/${id}`} 
+        type={type}
+        season={season}
+        episode={episode}
+        episodeTitle={episodeTitle}
       />
       <div className="w-full h-full">
         <VidsrcPlayer 
           tmdbId={id} 
           type={type} 
-          season={s || 1} 
-          episode={e || 1} 
+          season={season} 
+          episode={episode} 
         />
       </div>
     </main>
