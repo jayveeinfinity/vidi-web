@@ -13,15 +13,23 @@ export default function Header() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMoviesSubmenuOpen, setIsMoviesSubmenuOpen] = useState(false);
 
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setIsProfileMenuOpen(false);
+    setIsMobileMenuOpen(false);
     router.push('/');
     router.refresh();
   };
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,8 +130,10 @@ export default function Header() {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-6">
+
+        <div className="flex items-center gap-3 md:gap-6">
           <SearchBar />
+
           {user ? (
             <>
               <button className="relative hover:text-primary transition-all duration-300 scale-95 active:scale-90 hidden md:block">
@@ -133,7 +143,7 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all focus:outline-none"
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-primary/20 overflow-hidden cursor-pointer hover:border-primary transition-all focus:outline-none"
                 >
                   <img
                     alt="User Profile"
@@ -158,6 +168,14 @@ export default function Header() {
                         Profile
                       </Link>
                       <Link
+                        href="/profile/watchlist"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="px-4 py-2 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium text-left flex items-center gap-2"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">bookmark</span>
+                        My Watchlist
+                      </Link>
+                      <Link
                         href="/settings"
                         onClick={() => setIsProfileMenuOpen(false)}
                         className="px-4 py-2 hover:bg-white/5 text-on-surface hover:text-primary transition-colors text-sm font-medium text-left flex items-center gap-2"
@@ -179,12 +197,191 @@ export default function Header() {
               </div>
             </>
           ) : (
-            <Link href="/login" className="px-4 py-2 bg-primary/10 text-primary font-label-md rounded-lg hover:bg-primary/20 transition-colors">
+            <Link href="/login" className="hidden sm:inline-flex px-4 py-2 bg-primary/10 text-primary font-label-md rounded-lg hover:bg-primary/20 transition-colors">
               Sign In
             </Link>
           )}
+
+          {/* Mobile hamburger menu toggle button */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 text-white/80 hover:text-primary transition-colors flex items-center justify-center cursor-pointer rounded-lg hover:bg-white/5"
+            aria-label="Toggle navigation menu"
+          >
+            <span className="material-symbols-outlined text-[26px]">
+              {isMobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
         </div>
       </nav>
+
+      {/* Mobile Navigation Drawer / Dropdown */}
+      {isMobileMenuOpen && (
+        <>
+          <div
+            className="md:hidden fixed inset-0 top-[72px] bg-black/60 backdrop-blur-sm z-40 animate-in fade-in duration-200"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="md:hidden absolute top-full left-0 right-0 max-h-[calc(100vh-72px)] overflow-y-auto bg-surface/98 backdrop-blur-2xl border-b border-white/10 shadow-2xl z-50 p-4 space-y-3 animate-in slide-in-from-top-4 duration-300">
+            {/* User status card on mobile */}
+            {user ? (
+              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                <img
+                  alt="User Profile"
+                  className="w-10 h-10 rounded-full object-cover border border-primary/40"
+                  src={user.user_metadata?.avatar_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuAPfbfb8N87pc7vZKY4uHLpkRsBdFgOmEqIDE9Uh6dK50Gs8ObAxuiHUPeaxJ9TxjezBXFQkL9kkgS-XowLQ2MnAM6gR17CIfpxlBAmyRH3hh1pPDdTgfHXcQKsDjySAUAuGhEm1-FayxWK5aDt4herj5RGphFWDdAJp38-l1ghNEm9LlSC4ApIavkALtYkfmtJ3bnelgJpQjNbljEjaRWYXnC-G-EVPiJfxs9eMCGb31wUq0NGJew-auVy6qBWrq3y9UOM9plXb1Nd"}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">
+                    {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                  </p>
+                  <p className="text-xs text-white/50 truncate">{user.email}</p>
+                </div>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full py-2.5 bg-primary text-surface font-semibold text-sm rounded-xl flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">login</span>
+                Sign In
+              </Link>
+            )}
+
+            {/* Navigation Links */}
+            <div className="flex flex-col space-y-1">
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  pathname === '/' ? 'bg-primary/15 text-primary font-semibold' : 'text-on-surface hover:bg-white/5'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[20px]">home</span>
+                Home
+              </Link>
+
+              {/* Movies with accordion */}
+              <div>
+                <div
+                  onClick={() => setIsMoviesSubmenuOpen(!isMoviesSubmenuOpen)}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                    pathname.startsWith('/movies') ? 'bg-primary/15 text-primary font-semibold' : 'text-on-surface hover:bg-white/5'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[20px]">movie</span>
+                    Movies
+                  </div>
+                  <span className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${isMoviesSubmenuOpen ? 'rotate-180' : ''}`}>
+                    expand_more
+                  </span>
+                </div>
+
+                {isMoviesSubmenuOpen && (
+                  <div className="ml-8 pl-3 border-l border-white/10 mt-1 space-y-1 py-1">
+                    <Link
+                      href="/movies"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      All Movies
+                    </Link>
+                    <Link
+                      href="/movies/new-releases"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      New Releases
+                    </Link>
+                    <Link
+                      href="/movies/trending"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      Trending
+                    </Link>
+                    <Link
+                      href="/movies/popular"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      Popular
+                    </Link>
+                    <Link
+                      href="/movies/top-rated"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      Top Rated
+                    </Link>
+                    <Link
+                      href="/movies/upcoming"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-1.5 text-xs text-white/70 hover:text-primary transition-colors"
+                    >
+                      Upcoming
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              <Link
+                href="/tv"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  pathname.startsWith('/tv') ? 'bg-primary/15 text-primary font-semibold' : 'text-on-surface hover:bg-white/5'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[20px]">tv</span>
+                TV Shows
+              </Link>
+
+              <Link
+                href="/genres"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  pathname.startsWith('/genres') ? 'bg-primary/15 text-primary font-semibold' : 'text-on-surface hover:bg-white/5'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[20px]">category</span>
+                Genres
+              </Link>
+
+              {user && (
+                <>
+                  <div className="h-px bg-white/10 my-2" />
+                  <Link
+                    href="/profile/watchlist"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface hover:bg-white/5"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">bookmark</span>
+                    My Watchlist
+                  </Link>
+                  <Link
+                    href="/profile"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface hover:bg-white/5"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">person</span>
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-error hover:bg-white/5 w-full text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    Sign Out
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 }

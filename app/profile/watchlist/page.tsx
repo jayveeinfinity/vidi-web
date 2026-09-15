@@ -35,10 +35,10 @@ export default async function WatchlistPage() {
         {watchlists && watchlists.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {watchlists.map((movie) => (
-              <MovieItem 
-                key={movie.id} 
-                movie={movie as any} 
-                watchlistIds={watchlistIds} 
+              <MovieItem
+                key={movie.id}
+                movie={movie as any}
+                watchlistIds={watchlistIds}
               />
             ))}
           </div>
